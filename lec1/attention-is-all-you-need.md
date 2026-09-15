@@ -28,13 +28,13 @@ $$
 h_t = f(h_{t-1}, x_t)
 $$
 
-At each timestep *t*, the model takes the current input `x_t` and the previous hidden state `h_{t-1}`, and produces a new hidden state `h_t`, meant to summarize everything relevant from the sequence so far.
+At each timestep $t$, the model takes the current input $x_t$ and the previous hidden state $h_{t-1}$, and produces a new hidden state $h_t$, meant to summarize everything relevant from the sequence so far.
 
 **Mental picture:** reading a sentence left to right, updating a running summary in your head after each word. By the end of the sentence, that summary is supposed to contain everything you need.
 
 **Plain RNNs vs. LSTMs/GRUs:** plain RNNs suffer badly from vanishing/exploding gradients over long sequences — the signal from early words gets washed out by the time you reach the end. LSTMs and GRUs add *gating mechanisms* — learned switches controlling what information gets kept, forgotten, or written at each step — allowing them to retain information over much longer sequences than a plain RNN can. By the mid-2010s, LSTMs and GRUs were the standard for state-of-the-art sequence modeling.
 
-**The fatal limitation:** computing `h_t` requires `h_{t-1}`, which requires `h_{t-2}`, and so on back to the start. This is a *hard sequential dependency* — you cannot compute step 50 before step 49. That means:
+**The fatal limitation:** computing $h_t$ requires $h_{t-1}$, which requires $h_{t-2}$, and so on back to the start. This is a *hard sequential dependency* — you cannot compute step 50 before step 49. That means:
 
 - No parallelism within a single training example — you're stuck processing sequentially even on hardware built for massive parallel computation.
 - This becomes especially painful for long sequences, where memory constraints also limit how much you can batch across different examples.
@@ -51,7 +51,7 @@ $$
 
 **Key property — locality.** A single convolutional layer only lets a token "see" its immediate neighbors (however wide the kernel is). To let far-apart positions interact, you either need a very wide kernel, or you need to *stack layers* so the effective receptive field grows with depth.
 
-**Why this was attractive:** unlike recurrence, every position's convolution can be computed simultaneously — `y_t` doesn't wait on `y_{t-1}`, it only depends on nearby *inputs*. This gave convolutional sequence models (like ConvS2S and ByteNet) full parallelism during training, something RNNs couldn't offer.
+**Why this was attractive:** unlike recurrence, every position's convolution can be computed simultaneously — $y_t$ doesn't wait on $y_{t-1}$, it only depends on nearby *inputs*. This gave convolutional sequence models (like ConvS2S and ByteNet) full parallelism during training, something RNNs couldn't offer.
 
 **But there was still a cost:** because each layer only connects nearby positions, relating two *far apart* positions requires the signal to pass through multiple layers. The number of operations needed to relate two arbitrary positions grows with the distance between them — linearly for ConvS2S, logarithmically for ByteNet (which uses dilated convolutions that skip increasingly large gaps).
 
@@ -159,10 +159,10 @@ $$
 
 Step by step:
 
-1. **`QKᵀ`** — dot product of every query with every key → a matrix of raw compatibility scores.
-2. **`/√d_k`** — scale down. Without this, for large key dimension `d_k`, dot products grow large in magnitude and push softmax into a region with tiny gradients. This scaling is exactly what closes the performance gap that made unscaled dot-product attention underperform additive attention at high dimensions.
-3. **`softmax(...)`** — normalize each row into a probability distribution summing to 1.
-4. **`× V`** — take the weighted sum of value vectors. This is the output.
+1. **$QK^T$** — dot product of every query with every key → a matrix of raw compatibility scores.
+2. **$/\sqrt{d_k}$** — scale down. Without this, for large key dimension $d_k$, dot products grow large in magnitude and push softmax into a region with tiny gradients. This scaling is exactly what closes the performance gap that made unscaled dot-product attention underperform additive attention at high dimensions.
+3. **$\text{softmax}(\cdot)$** — normalize each row into a probability distribution summing to 1.
+4. **$\times V$** — take the weighted sum of value vectors. This is the output.
 
 ### 3.3 Multi-Head Attention
 
@@ -178,9 +178,9 @@ $$
 \text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)
 $$
 
-Queries, keys, and values are each linearly projected into `h` smaller subspaces (different learned projections per head), attention runs independently in each, and the `h` outputs are concatenated and projected once more back to the model dimension.
+Queries, keys, and values are each linearly projected into $h$ smaller subspaces (different learned projections per head), attention runs independently in each, and the $h$ outputs are concatenated and projected once more back to the model dimension.
 
-**Paper's numbers:** `h = 8` heads, `d_model = 512`, so each head operates in `d_k = d_v = 512/8 = 64` dimensions. Total compute is comparable to one full-size attention head — this trades width for representational diversity, not extra cost.
+**Paper's numbers:** $h = 8$ heads, $d_{model} = 512$, so each head operates in $d_k = d_v = 512/8 = 64$ dimensions. Total compute is comparable to one full-size attention head — this trades width for representational diversity, not extra cost.
 
 **Analogy:** 8 readers going over the same sentence, each tracking a different kind of relationship — then their notes get combined.
 
@@ -192,7 +192,7 @@ Queries, keys, and values are each linearly projected into `h` smaller subspaces
 | Decoder self-attention (masked) | decoder | same decoder layer, masked | every output token attends only to *earlier* output tokens |
 | Encoder-decoder attention | decoder | encoder output | every output token attends to the entire input sequence |
 
-Masking in decoder self-attention works by setting illegal (future) positions to `−∞` before the softmax, so they receive zero weight — this preserves the autoregressive property (predictions for position *i* can only depend on known outputs before *i*).
+Masking in decoder self-attention works by setting illegal (future) positions to $-\infty$ before the softmax, so they receive zero weight — this preserves the autoregressive property (predictions for position $i$ can only depend on known outputs before $i$).
 
 *Note for later:* in decoder-only models like GPT, there's no separate encoder — so encoder self-attention and encoder-decoder attention both disappear, leaving only masked self-attention.
 
@@ -204,7 +204,7 @@ $$
 \text{LayerNorm}(x + \text{Sublayer}(x))
 $$
 
-All sub-layers output dimension `d_model = 512` — necessary for the residual addition to work.
+All sub-layers output dimension $d_{model} = 512$ — necessary for the residual addition to work.
 
 **Decoder:** also 6 identical layers. Each layer: masked self-attention → encoder-decoder attention → feed-forward network, each wrapped the same way.
 
@@ -220,7 +220,7 @@ Two linear layers with a ReLU in between. Input/output dimension 512, inner dime
 
 ### 3.7 Embeddings and Weight Tying
 
-Tokens are converted to `d_model`-dimensional vectors via learned embeddings. The same weight matrix is shared between the input embedding, the output embedding, and the final pre-softmax linear layer — reducing parameters and tying input/output representations together. Embeddings are scaled by `√d_model`.
+Tokens are converted to $d_{model}$-dimensional vectors via learned embeddings. The same weight matrix is shared between the input embedding, the output embedding, and the final pre-softmax linear layer — reducing parameters and tying input/output representations together. Embeddings are scaled by $\sqrt{d_{model}}$.
 
 ### 3.8 Positional Encoding
 
@@ -236,9 +236,9 @@ $$
 PE_{(pos, 2i+1)} = \cos(pos / 10000^{2i/d_{model}})
 $$
 
-`pos` = position in the sequence, `i` = dimension index. Each dimension is a sinusoid; wavelengths form a geometric progression from `2π` to `10000·2π`.
+$pos$ = position in the sequence, $i$ = dimension index. Each dimension is a sinusoid; wavelengths form a geometric progression from $2\pi$ to $10000 \cdot 2\pi$.
 
-**Why sine/cosine instead of a learned embedding?** This form should let the model easily learn to attend by *relative* position, since `PE(pos+k)` can be expressed as a linear function of `PE(pos)`. It also lets the model handle sequence lengths longer than any seen during training, since the function is defined for any position — not just ones with a learned lookup entry.
+**Why sine/cosine instead of a learned embedding?** This form should let the model easily learn to attend by *relative* position, since $PE(pos+k)$ can be expressed as a linear function of $PE(pos)$. It also lets the model handle sequence lengths longer than any seen during training, since the function is defined for any position — not just ones with a learned lookup entry.
 
 **Check your understanding:**
 
@@ -287,17 +287,17 @@ This architecture — largely unmodified at its core — became the backbone of 
 | **Self-attention** | Attention where Q, K, and V all come from the same sequence |
 | **Encoder-decoder attention** | Attention where Q comes from the decoder and K/V come from the encoder |
 | **Multi-head attention** | Running several attention functions in parallel, each in a smaller learned subspace, then combining results |
-| **Scaled dot-product attention** | Attention where compatibility is a dot product, divided by `√d_k` before softmax |
+| **Scaled dot-product attention** | Attention where compatibility is a dot product, divided by $\sqrt{d_k}$ before softmax |
 | **Additive attention** | Attention where compatibility is scored by a small feed-forward network (Bahdanau-style) |
 | **Positional encoding** | A signal added to embeddings so the model can distinguish token order |
-| **Residual connection** | Adding a sub-layer's input to its output (`x + Sublayer(x)`), easing training of deep stacks |
+| **Residual connection** | Adding a sub-layer's input to its output ($x + \text{Sublayer}(x)$), easing training of deep stacks |
 | **Layer normalization** | Normalizing activations within a layer to stabilize training |
 | **Autoregressive** | Generating output one token at a time, each conditioned on previously generated tokens |
 | **Masking** | Blocking certain positions from being attended to (e.g. future tokens in decoder self-attention) |
 
 ### Exam-style discussion questions
 
-1. Why does self-attention need the `1/√d_k` scaling factor? What specifically breaks without it?
+1. Why does self-attention need the $1/\sqrt{d_k}$ scaling factor? What specifically breaks without it?
 2. Why use multiple attention heads instead of one larger one — what's the actual representational trade-off?
 3. Self-attention connects any two positions in one step (constant path length), unlike RNNs or CNNs. What's the practical cost of this benefit (think about compute as sequence length grows)?
 4. Why is the decoder's self-attention masked, but the encoder's is not?
