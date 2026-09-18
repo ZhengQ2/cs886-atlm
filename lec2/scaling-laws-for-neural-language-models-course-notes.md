@@ -400,17 +400,17 @@ Since $\alpha_N/\alpha_S = 0.077/0.76 \approx 0.10$: **compute-efficient trainin
 
 Compare to typical practice, taken as stopping 2% above convergence. Fixing the target loss, the two recipes relate as (Eqs. B.12–B.14):
 
-| | Compute-efficient ($f = 10\%$) vs. conventional ($f = 2\%$) |
+| | Compute-efficient ($`f = 10\%`$) vs. conventional ($`f = 2\%`$) |
 |---|---|
 | Parameters | $(1.10/1.02)^{1/0.077} \approx \mathbf{2.7\times}$ **more** |
 | Steps | $((1+1/0.10)/(1+1/0.02))^{1/0.76} \approx \mathbf{7.7\times}$ **fewer** |
-| Total compute | $2.7 \times 0.13 \approx \mathbf{0.35 \rightarrow 65\%\text{ less}}$ |
+| Total compute | $`2.7 \times 0.13 \approx \mathbf{0.35 \rightarrow 65\%\text{ less}}`$ |
 
 Same loss, one third of the compute, by training a model $2.7\times$ larger for $7.7\times$ fewer updates. This is where "**convergence is inefficient**" and "**big models may be more important than big data**" come from.
 
 ### 8.4 How wrong can you be?
 
-Reassuringly forgiving. Models between **$0.6\times$ and $2.2\times$** the optimal size reach the same loss with only $\sim 20\%$ extra compute. And a $2.2\times$ oversized model gets there in **45% fewer steps** for that 20% compute premium — which is a real option if you have the parallelism and want wall-clock speed. Undersizing, conversely, is attractive when you care about inference cost, which this paper does not model at all.
+Reassuringly forgiving. Models between **$0.6\times$ and $2.2\times$** the optimal size reach the same loss with only $`\sim 20\%`$ extra compute. And a $2.2\times$ oversized model gets there in **45% fewer steps** for that 20% compute premium — which is a real option if you have the parallelism and want wall-clock speed. Undersizing, conversely, is attractive when you care about inference cost, which this paper does not model at all.
 
 ---
 
@@ -512,7 +512,7 @@ These are real inconsistencies in the text. Flagging them so you don't lose twen
 | **Gradient noise scale** | Measure from McCandlish et al. (2018) that approximately predicts $B_{\text{crit}}$ |
 | **$S_{\min}$** | Steps needed if trained at $B \gg B_{\text{crit}}$ (step-minimal regime) |
 | **$C_{\min}$** | Compute needed if trained at $B \ll B_{\text{crit}}$ (compute-minimal regime). The x-axis the paper trusts for extrapolation |
-| **Convergence factor $f$** | Fractional excess of current loss over that model's converged loss. Compute-efficient training sets $f \approx \alpha_N/\alpha_S \approx 10\%$ |
+| **Convergence factor $f$** | Fractional excess of current loss over that model's converged loss. Compute-efficient training sets $`f \approx \alpha_N/\alpha_S \approx 10\%`$ |
 | **Compute-efficient frontier** | The set of $(N, B, S)$ choices minimizing loss at each compute budget |
 | **Sample efficiency** | Loss reached per token processed. Increases with model size |
 | **Universality of overfitting** | The observation that $\delta L$ depends on $N$ and $D$ only through $N^{0.74}/D$ |
@@ -538,7 +538,7 @@ These are real inconsistencies in the text. Flagging them so you don't lose twen
 
 **Synthesis**
 
-9. Derive the $\sim 10\%$ figure: show that compute-efficient training ends at a loss $(1 + \alpha_N/\alpha_S)$ times the converged loss, and explain intuitively why the ratio of those two exponents sets the stopping point.
+9. Derive the $`\sim 10\%`$ figure: show that compute-efficient training ends at a loss $(1 + \alpha_N/\alpha_S)$ times the converged loss, and explain intuitively why the ratio of those two exponents sets the stopping point.
 10. Reconstruct the Chapter 9 contradiction in your own words: which two scaling relations collide, why one is a hard ceiling rather than a choice, and what the crossing point is claimed to mean.
 11. Suppose someone repeats this study but tunes the learning-rate decay separately for every run length. Which specific fitted exponent would you expect to move most, in which direction, and why? Connect your answer to the Kaplan/Chinchilla discrepancy.
 12. The paper measures only cross-entropy loss, never downstream task performance, and explicitly flags that smooth loss improvements might hide qualitative capability jumps. Argue both sides: what does using loss as the sole metric buy you, and what does it cost?

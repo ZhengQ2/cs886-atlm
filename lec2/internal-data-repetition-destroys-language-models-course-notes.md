@@ -138,7 +138,9 @@ Two things fall out immediately.
 
 **Second — and this is the part that isn't obvious — the amplification gets worse as models get better.** What you observe on a loss plot is a percentage of *total* loss $L$, but the formula eats percentages of *reducible* loss $L - E$. The conversion factor between them is $L/(L-E)$, and that ratio grows as a model approaches the floor. Chain the two together:
 
-$$\text{compute cost} \approx \underbrace{\frac{L}{L-E}}_{\text{total} \to \text{reducible}} \times \underbrace{\frac{1}{\gamma}}_{\text{reducible} \to \text{compute}} \times \text{(\% loss regression)}$$
+```math
+\text{compute cost} \approx \underbrace{\frac{L}{L-E}}_{\text{total} \to \text{reducible}} \times \underbrace{\frac{1}{\gamma}}_{\text{reducible} \to \text{compute}} \times \text{(\% loss regression)}
+```
 
 At 34M parameters the fitted curve gives $L \approx 4.81$ and $L - E \approx 2.45$, so the amplifier is about $2.0 \times 3.15 \approx 6$. At 344M, $L \approx 2.93$ and $L - E \approx 0.56$, so the amplifier is about $5.2 \times 3.15 \approx 16$.
 

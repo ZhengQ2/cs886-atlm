@@ -177,7 +177,7 @@ Read it in three regimes:
 | $R_D \ll R_D^{\ast}$ | $D' \approx U_D(1+R_D) = D$ | repeats ≈ fresh data |
 | $R_D \gg R_D^{\ast}$ | $D' \to U_D(1 + R_D^{\ast})$ | ceiling; extra epochs buy nothing |
 
-$R_D^{\ast}$ is a **half-life for repetition**. At exactly $R_D = R_D^{\ast}$, the repeated tokens have retained $1 - 1/e \approx 63\%$ of their average value.
+$R_D^{\ast}$ is a **half-life for repetition**. At exactly $R_D = R_D^{\ast}$, the repeated tokens have retained $`1 - 1/e \approx 63\%`$ of their average value.
 
 That the formula collapses to Chinchilla at $R_D = 0$ is not a coincidence — it is a design requirement. A new law that disagreed with the old one in the regime the old one was fitted on would be a worse law, not a better one.
 
@@ -195,7 +195,7 @@ Now the approximation. $R_D^{\ast} = (1-\delta)/\delta = 3$:
 
 $$D' = 1 + 3\left(1 - e^{-4/3}\right) = 3.21$$
 
-3.21 versus 3.05 — a 5% discrepancy, which looks bad until you remember $D'$ enters the loss raised to $\beta = 0.353$. The resulting difference in the loss term is $(3.21/3.05)^{0.353} - 1 = \mathbf{1.8\%}$. The exponent flattens the error, which is why the authors accept the approximation in exchange for an interpretable $R_D^{\ast}$.
+3.21 versus 3.05 — a 5% discrepancy, which looks bad until you remember $D'$ enters the loss raised to $\beta = 0.353$. The resulting difference in the loss term is $`(3.21/3.05)^{0.353} - 1 = \mathbf{1.8\%}`$. The exponent flattens the error, which is why the authors accept the approximation in exchange for an interpretable $R_D^{\ast}$.
 
 Push it further: at $R_D = 100$, $D' = 1 + 3(1 - e^{-33.3}) = 3.99$. The ceiling $U(1+R_D^{\ast}) = 4$ is essentially reached. **A hundred epochs on this corpus is worth four fresh corpora — and a thousand epochs is still worth four.**
 
