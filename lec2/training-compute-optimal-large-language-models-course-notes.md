@@ -99,7 +99,7 @@ Here is why that is a problem. A cosine schedule anneals the learning rate from 
 
 So the loss you read at the halfway point is **not** the loss of a model trained on 65B tokens. It is the loss of a model that is midway through a longer journey and has not yet been allowed to settle. It is an overestimate.
 
-Now trace the consequence. Those overestimates occur specifically in the low-$D$ regime. Training on less data therefore looks worse than it actually is. If short runs look bad, the fit concludes that marginal compute should go to parameters rather than tokens — which is exactly the $a = 0.73$ result.
+Now trace the consequence. Those overestimates occur specifically in the low-$`D`$ regime. Training on less data therefore looks worse than it actually is. If short runs look bad, the fit concludes that marginal compute should go to parameters rather than tokens — which is exactly the $a = 0.73$ result.
 
 Hoffmann et al. instead **match the cosine cycle length to the intended token budget** for every run, so each data point is a model that was actually trained to finish where it finished.
 
@@ -345,7 +345,7 @@ Note the shape of the shrink: **same depth, half the width.** Feed-forward size 
 
 $$12 \times 8192^2 \times 80 \approx 6.4\times10^{10} = 64\text{B}$$
 
-That is 64B, not 70B. Adding one further $d \times d$ projection per layer — consistent with the relative positional encoding Chinchilla inherits from Gopher — gives $13d^2L \approx 69.8$B. The same correction takes Gopher from 258B to 279B. Both land on their stated sizes, which is a good sign that the reconstruction is right. The paper does not spell this out; you get it by doing the arithmetic.
+That is 64B, not 70B. Adding one further $d \times d$ projection per layer — consistent with the relative positional encoding Chinchilla inherits from Gopher — gives $13d^2L \approx 69.8\text{B}$. The same correction takes Gopher from 258B to 279B. Both land on their stated sizes, which is a good sign that the reconstruction is right. The paper does not spell this out; you get it by doing the arithmetic.
 
 ### 8.2 The confounds (read this part critically)
 
@@ -451,7 +451,7 @@ Worth collecting, both because careful reading is the skill and because a few of
 2.  **MMLU: 67.5% or 67.6%?** The abstract says 67.5%; Table 6 and §4.2.2 say 67.6%.
 3.  **Natural Questions numbers conflict.** §4.2.6 quotes Gopher at 21% (5-shot) and 28% (64-shot); Table 9 gives 24.5% and 28.2%.
 4.  **"Outperforms on all tasks" is not quite true.** §4.2.5 says Chinchilla outperforms Gopher on all common-sense tasks; Table 8 shows a tie on PIQA (81.8% both), and the table caption correctly says "matches or outperforms."
-5.  **Projections in text ≠ projections in table.** §3.4 says a 175B model wants $4.41\times10^{24}$ FLOPs and 4.2T tokens, and a 280B model ~$10^{25}$ FLOPs and 6.8T tokens. Table 3 gives $3.85\times10^{24}$/3.7T and $9.90\times10^{24}$/5.9T.
+5.  **Projections in text ≠ projections in table.** §3.4 says a 175B model wants $4.41\times10^{24}$ FLOPs and 4.2T tokens, and a 280B model $\sim 10^{25}$ FLOPs and 6.8T tokens. Table 3 gives $3.85\times10^{24}$/3.7T and $9.90\times10^{24}$/5.9T.
 6.  **GPT-3 changes size.** §5 calls it 170B; Table 1 says 175B.
 7.  **Two broken equation references.** In §3.3 the efficient-frontier paragraph says the optimum balances the two terms in "Equation (3)" — Equation (3) is the Huber objective; the terms in question are in Equation (2). In §D.2, "the second term only depends on $D$" should read *third* term.
 8.  **A missing minus sign.** Equation (6) defines the expected risk as $\mathbb{E}[\log f(x)_y]$ and calls it a cross-entropy to be minimized. Cross-entropy is $-\mathbb{E}[\log f(x)_y]$; as written, minimizing it would minimize likelihood.

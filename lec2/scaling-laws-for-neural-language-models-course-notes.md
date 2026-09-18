@@ -212,7 +212,7 @@ This looks arbitrary. It isn't — it's the simplest form satisfying three state
 
 1. *Rescaling.* A change of tokenizer multiplies the loss by an overall factor; the functional form must absorb that into $N_c$ and $D_c$. (Hence §4.3: those constants are not fundamental.)
 2. *Correct limits.* $L(N, \infty) = L(N)$ and $L(\infty, D) = L(D)$. Note the consequence: knowing the two single-variable laws fully determines every parameter of the joint law.
-3. *Analyticity at $D = \infty$*, i.e. a $1/D$ expansion with integer powers. Motivated by the idea that overfitting tracks the dataset's variance or signal-to-noise ratio, which scales as $1/D$.
+3. *Analyticity at $`D = \infty`$*, i.e. a $1/D$ expansion with integer powers. Motivated by the idea that overfitting tracks the dataset's variance or signal-to-noise ratio, which scales as $1/D$.
 
 The authors are candid that principle 3 has much weaker support than 1 and 2, and that it's what forces the asymmetric treatment of $N$ and $D$. Symmetric alternatives exist but lack the clean $1/D$ expansion and need an extra parameter. Their final defence is empirical: it fits.
 
@@ -335,11 +335,11 @@ The paper offers a speculative reading of $\alpha_S$: since the fit is best late
 
 ### 7.2 A lower bound on the early-stopping step
 
-If you're data-limited, when should you stop? The reasoning: finite-$D$ and infinite-$D$ learning curves track each other until overfitting kicks in, so the stopping point should correspond to the point where the achievable gap has been closed. Inverting the $L(N, S)$ relation:
+If you're data-limited, when should you stop? The reasoning: finite-$`D`$ and infinite-$`D`$ learning curves track each other until overfitting kicks in, so the stopping point should correspond to the point where the achievable gap has been closed. Inverting the $L(N, S)$ relation:
 
 > $$\mathbf{S_{\text{stop}}(N, D) \gtrsim \frac{S_c}{\left[L(N, D) - L(N, \infty)\right]^{1/\alpha_S}}} \qquad \text{(5.7)}$$
 
-Read it as: the smaller the overfitting gap between your finite-data loss and the infinite-data loss, the longer you should train. It's a lower bound and underestimates, because in reality finite-$D$ loss decreases more slowly, so you actually need more steps than this.
+Read it as: the smaller the overfitting gap between your finite-data loss and the infinite-data loss, the longer you should train. It's a lower bound and underestimates, because in reality finite-$`D`$ loss decreases more slowly, so you actually need more steps than this.
 
 ---
 
@@ -469,13 +469,13 @@ And the discussion's aside — that smooth quantitative improvement can conceal 
 
 ### 11.2 Where it was wrong: Chinchilla
 
-In 2022, Hoffmann et al. ("Training Compute-Optimal Large Language Models," the Chinchilla paper) redid the compute-optimal analysis and reached a materially different conclusion: **$N$ and $D$ should scale roughly equally** with compute (exponents near 0.5 each, rather than 0.73 and 0.27), implying roughly **20 tokens per parameter** rather than $\sim 2$–$6$. Their demonstration was a 70B model trained on 1.4T tokens outperforming a 280B model trained on far less — same compute, quarter the size, better results.
+In 2022, Hoffmann et al. ("Training Compute-Optimal Large Language Models," the Chinchilla paper) redid the compute-optimal analysis and reached a materially different conclusion: **$N$ and $D$ should scale roughly equally** with compute (exponents near 0.5 each, rather than 0.73 and 0.27), implying roughly **20 tokens per parameter** rather than $\sim 2\text{–}6$. Their demonstration was a 70B model trained on 1.4T tokens outperforming a 280B model trained on far less — same compute, quarter the size, better results.
 
 | | Kaplan et al. (2020) | Chinchilla (2022) |
 |---|---|---|
 | $N \propto$ | $C^{0.73}$ | $\approx C^{0.5}$ |
 | $D \propto$ | $C^{0.27}$ | $\approx C^{0.5}$ |
-| Tokens per parameter (compute-optimal) | $\sim 2$–$6$ | $\sim 20$ |
+| Tokens per parameter (compute-optimal) | $\sim 2\text{–}6$ | $\sim 20$ |
 | Practical upshot | Build huge models, train briefly | Build smaller models, train much longer |
 
 **Why the disagreement?** Subsequent work attributing the gap points at methodology rather than at any deep disagreement about power laws — most prominently the learning-rate schedule. Recall §2.5: every run here used a schedule tuned for $2.5 \times 10^5$ steps. If you then *evaluate* a shorter run by reading a point off the middle of that curve, the short run is handicapped by a learning rate that hasn't decayed for the length of training it actually got. That systematically makes "train longer" look worse than it is, and so biases the optimum toward larger models. Two further contributors identified in follow-up analyses: the exclusion of embedding parameters from $N$, and insufficiently tuned warmup for small models. Kaplan et al.'s own caveat #6 above names the learning-rate issue as untested — they flagged the crack that later split.

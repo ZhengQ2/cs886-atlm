@@ -148,7 +148,7 @@ At 34M parameters the fitted curve gives $L \approx 4.81$ and $L - E \approx 2.4
 
 ### 2.5 Worked example: the headline number, end to end
 
-Take the largest configuration: $N = 344$M, $\mathrm{OT} = 1$.
+Take the largest configuration: $N = 344\text{M}$, $\mathrm{OT} = 1$.
 
 **Step 1 — budgets.** $T = 20 \times 3.44\times10^8 = 6.88\times10^{9}$ tokens. $C = 120 \times (3.44\times10^8)^2 = 1.42\times10^{19}$ FLOPs.
 
@@ -176,7 +176,7 @@ A 2.6% loss regression is a **33% compute loss**. That is the paper.
 
 ## 3. Experimental design
 
-**Models.** Qwen3-style decoder-only transformers trained from scratch at $N \in \{34, 48, 63, 93, 153, 344\}$M. RoPE, RMSNorm, SwiGLU feed-forwards, grouped-query attention, untied input/output embeddings, BF16, FlashAttention-2. Sequence length 2048, vocabulary 151,670, head dimension 128, 32 attention heads and 32 KV heads throughout.
+**Models.** Qwen3-style decoder-only transformers trained from scratch at $N \in \{34, 48, 63, 93, 153, 344\}\text{M}$. RoPE, RMSNorm, SwiGLU feed-forwards, grouped-query attention, untied input/output embeddings, BF16, FlashAttention-2. Sequence length 2048, vocabulary 151,670, head dimension 128, 32 attention heads and 32 KV heads throughout.
 
 | $N$ | Layers | $d_{\text{model}}$ | $d_{\text{ff}}$ | Non-embedding params | Total params | Non-emb. share |
 |----|----|----|----|----|----|----|
@@ -242,7 +242,7 @@ Two concrete anchors from the sweep:
 
 A 10× increase in model size moves the worst-case pool up by roughly 90×.
 
-The interpretation the authors offer is that this tracks **memorization capacity**. A bigger model can absorb a bigger pool before that pool stops being harmlessly quarantined. Note that $D_r^{\text{peak}} \propto N^{1.84}$ grows *faster* than the compute budget's linear-in-$N$ repeated-token allowance $fT = 2\,\mathrm{OT}N$ — memorization capacity outruns compute.
+The interpretation the authors offer is that this tracks **memorization capacity**. A bigger model can absorb a bigger pool before that pool stops being harmlessly quarantined. Note that $D_r^{\text{peak}} \propto N^{1.84}$ grows *faster* than the compute budget's linear-in-$`N`$ repeated-token allowance $fT = 2\,\mathrm{OT}N$ — memorization capacity outruns compute.
 
 **Training duration barely matters.** The five $\mathrm{OT}$ sweeps largely fall on the same trend in $N$. Overtraining shifts the *level* of the damage but not the *location* of the worst structure.
 
@@ -322,7 +322,7 @@ $$X_{\text{in}}^\top X_{\text{in}} = C_u + rC_d \qquad\text{but}\qquad X_{\text{
 
 **That extra factor of $r$ is the entire story.** The duplicated rows enter the normal equations linearly in $r$, but they enter the *error* quadratically in $r$, because their errors are perfectly correlated instead of averaging out.
 
-*Verify it yourself with $d=1$.* Let the duplicated document have observed row $v$. Then $C_d = v^\top v$. The duplicated block of $X_{\text{in}}^\top X_{\text{in}}$ is $r$ copies summed: $r v^\top v$. But sandwiching the all-ones block sums over all $r \times r$ pairs: $r^2 v^\top v$. Done.
+*Verify it yourself with $`d=1`$.* Let the duplicated document have observed row $v$. Then $C_d = v^\top v$. The duplicated block of $X_{\text{in}}^\top X_{\text{in}}$ is $r$ copies summed: $r v^\top v$. But sandwiching the all-ones block sums over all $r \times r$ pairs: $r^2 v^\top v$. Done.
 
 **The analogy.** Ten independent witnesses give you ten noisy accounts; averaging them cancels error. One witness whose statement you photocopy ten times gives you the *same* error ten times — and a least-squares fit reads it as ten-fold corroboration. Duplication doesn't add information; it adds *confidence in one particular mistake*.
 
@@ -358,7 +358,7 @@ Equation (10) is non-monotonic in $r$ at fixed $(n, d, m)$, and the mechanism mi
 Two predictions come out of the theory and both match the transformer sweeps:
 
 1.  **Increasing $m$ shifts the peak to larger $d$** — the analogue of $D_r^{\text{peak}}$ growing with $N$ in equation (4).
-2.  **Weak dependence on $n$** — the analogue of the near-$\mathrm{OT}$-independence in Section 5.
+2.  **Weak dependence on $n$** — the analogue of the near-$`\mathrm{OT}`$-independence in Section 5.
 
 ### 7.6 Simulations
 
@@ -418,7 +418,7 @@ Bring these to the seminar. Several are the authors' own admissions; two are not
 | **CEL** | Compute-Equivalent Loss, $1 - \mathrm{CEG}$. The fraction of budget wasted. |
 | **Irreducible floor $E$** | Asymptote of the fitted scaling law. Fitted at 2.365 nats here. |
 | **Aliasing term $a_r$** | In the toy model, the error from fitting unobserved signal through observed coordinates. |
-| **Memorize-and-isolate** | Large-$R$ regime where a tiny pool is memorized into a quarantined slice of capacity, limiting damage. |
+| **Memorize-and-isolate** | Large-$`R`$ regime where a tiny pool is memorized into a quarantined slice of capacity, limiting damage. |
 
 ------------------------------------------------------------------------
 
@@ -454,7 +454,7 @@ Bring these to the seminar. Several are the authors' own admissions; two are not
 
 6.  Benchmark/test-set contamination. Any damage must come from a distorted training distribution, not from the model having seen eval data.
 
-7.  $D_r \propto N/R \propto N \cdot N^{0.96} = N^{1.96}$, versus the fitted 1.84. In-range the two fits agree closely (both give ~$5\times10^4$ at 34M and ~$4\times10^6$ at 344M); the discrepancy blows up under extrapolation, which is exactly where the authors warn against using it.
+7.  $D_r \propto N/R \propto N \cdot N^{0.96} = N^{1.96}$, versus the fitted 1.84. In-range the two fits agree closely (both give $\sim 5\times10^4$ at 34M and $\sim 4\times10^6$ at 344M); the discrepancy blows up under extrapolation, which is exactly where the authors warn against using it.
 
 8.  At 344M, $R^{\text{peak}} \approx 155$ — investigate the 200 cluster. At 34M, $R^{\text{peak}} \approx 1400$ — the 6000 cluster becomes the more likely offender and 200 looks comparatively safe.
 

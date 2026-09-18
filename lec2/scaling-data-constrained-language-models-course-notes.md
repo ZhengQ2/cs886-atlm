@@ -83,7 +83,7 @@ When $\alpha = \beta$, $a = b = 0.5$: multiply compute by 100, multiply both $N$
 
 **Where the 6 comes from.** The cost model throughout is $\text{FLOPs}(N,D) \approx 6ND$, inherited from Kaplan et al. The standard accounting: a forward pass costs about two FLOPs per parameter per token (one multiply, one add), and the backward pass costs about twice the forward pass, giving $2 + 4 = 6$. The paper cites this rather than deriving it, and the constant doesn't matter much — what matters is that **cost is linear in both $N$ and $D$**, so a parameter and a token are interchangeable currency. That is exactly what makes "should I buy parameters or epochs?" a well-posed question.
 
-**Sanity check that the fit is real.** Plug the Gopher compute budget of $5.76 \times 10^{23}$ FLOPs into the formulas above and you get $N_{\text{opt}} = 70.0$B parameters and $D_{\text{opt}} = 1.37$T tokens. Chinchilla's own IsoFLOP curves on C4 predicted 73B and 1.3T. The reconstruction lands within a few percent, which is why we can trust the coefficients for everything that follows.
+**Sanity check that the fit is real.** Plug the Gopher compute budget of $5.76 \times 10^{23}$ FLOPs into the formulas above and you get $N_{\text{opt}} = 70.0\text{B}$ parameters and $D_{\text{opt}} = 1.37\text{T}$ tokens. Chinchilla's own IsoFLOP curves on C4 predicted 73B and 1.3T. The reconstruction lands within a few percent, which is why we can trust the coefficients for everything that follows.
 
 **The assumption that breaks.** Chinchilla's fit was made entirely from single-epoch runs. $D$ there means "tokens processed," and every token processed was fresh. Nothing in the formula knows what a repeat *is*, so there is no reason to expect it to extrapolate into the multi-epoch regime — and Chapter 7 shows it doesn't.
 
@@ -109,7 +109,7 @@ This one is less obvious and repays slow reading.
 
 $$U_N = \min(N_{\text{opt}}(U_D), N) \qquad\qquad R_N = \frac{N}{U_N} - 1$$
 
-To compute $U_N$, you ask Chinchilla: *if I had exactly $U_D$ unique tokens and trained for one epoch, what model size would be compute-optimal?* That size is $U_N$ — the parameters your unique data can "support." Anything beyond it is **excess**, counted by $R_N$.
+To compute $U_N$, you ask Chinchilla: *if I had exactly $`U_D`$ unique tokens and trained for one epoch, what model size would be compute-optimal?* That size is $U_N$ — the parameters your unique data can "support." Anything beyond it is **excess**, counted by $R_N$.
 
 With the fitted C4 coefficients this relationship collapses to a memorable constant:
 
@@ -117,7 +117,7 @@ $$U_N = 0.051 \cdot U_D$$
 
 That is roughly **one parameter per 20 tokens** — Chinchilla's ratio, reappearing as the definition of what counts as excess capacity.
 
-*Concrete instance.* You have $U_D = 100$M unique tokens. Then $U_N \approx 5$–7M parameters is "what the data supports." Train a 212M-parameter model on it and $R_N \approx 30$: you have thirty times more capacity than your data can justify.
+*Concrete instance.* You have $U_D = 100\text{M}$ unique tokens. Then $U_N \approx 5$–7M parameters is "what the data supports." Train a 212M-parameter model on it and $R_N \approx 30$: you have thirty times more capacity than your data can justify.
 
 ### 3.3 Why symmetry
 
@@ -321,7 +321,7 @@ Chinchilla fitted on training loss. This paper uses held-out test loss, and must
 
 ## Chapter 7. Result I — Allocation: how to spend a budget
 
-Take $D_C = 100$M unique tokens. Chinchilla's one-epoch compute-optimal model for that data is about **7M parameters**. That is the starting point; the experiment asks what happens as you spend more compute than is "optimal."
+Take $D_C = 100\text{M}$ unique tokens. Chinchilla's one-epoch compute-optimal model for that data is about **7M parameters**. That is the starting point; the experiment asks what happens as you spend more compute than is "optimal."
 
 **The result is large.** Across 93 models on this budget, the best loss is achieved at roughly **20–60× more parameters and 20–60× more epochs** than compute-optimal — around **7000× more FLOPs** — and it cuts loss by more than **50%** (the contour plot spans 8.10 down to 3.72).
 
@@ -361,7 +361,7 @@ Every model in a row processes the same number of tokens and has the same size. 
 
 **The headline number.** The 8.7B model trained for **4 epochs** on 44B unique tokens finishes with only **0.5% higher validation loss** than the same model trained on 178B unique tokens for one epoch. Three quarters of the data was thrown away and replaced with repetition, at a cost of half a percent.
 
-You can reproduce that from the law. With $U_D = 44$B and $R_D = 3.05$, effective data is $D' \approx 166$B against $D = 178$B processed, and running the full equation predicts a loss increase of about 0.7% — the right order of magnitude, from a two-parameter fit.
+You can reproduce that from the law. With $U_D = 44\text{B}$ and $R_D = 3.05$, effective data is $D' \approx 166\text{B}$ against $D = 178\text{B}$ processed, and running the full equation predicts a loss increase of about 0.7% — the right order of magnitude, from a two-parameter fit.
 
 **Where it breaks down.** Extrapolating the law out to enormous compute with $D_C$ held fixed reproduces the three-phase shape from the paper's opening figure:
 
