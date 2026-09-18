@@ -427,18 +427,18 @@ Data is needed faster than compute-optimal training can supply it. So compute-ef
 
 **Make it quantitative.** Once data-limited, loss should follow $L(D) \propto D^{-0.095}$, and with $D \propto C_{\min}^{0.27}$ that gives $L \propto C_{\min}^{-0.026}$ — shallower than the compute law's $C_{\min}^{-0.050}$. A shallower line and a steeper line must cross. The crossing point:
 
-> $$\mathbf{C_* \sim 10^4\text{ PF-days}, \quad N_* \sim 10^{12}\text{ params}, \quad D_* \sim 10^{12}\text{ tokens}, \quad L_* \sim 1.7\text{ nats/token}} \qquad \text{(6.8)}$$
+> $$\mathbf{C_{\ast} \sim 10^4\text{ PF-days}, \quad N_{\ast} \sim 10^{12}\text{ params}, \quad D_{\ast} \sim 10^{12}\text{ tokens}, \quad L_{\ast} \sim 1.7\text{ nats/token}} \qquad \text{(6.8)}$$
 
 The paper stresses these values are highly uncertain — an order of magnitude either way, since they come from differencing two fitted exponents.
 
 **Two readings, both offered:**
 
 - *Conservative:* the scaling laws break down at or before this point. Something must give, and this estimates where.
-- *Speculative:* the intersection is meaningful. If you can't push past $N_*$ without qualitatively different data requirements, perhaps at that point the model has extracted all the reliably-available information in natural language, making **$L_* \approx 1.7$ nats a rough estimate of the entropy per token of natural language**, and the loss curve would flatten there.
+- *Speculative:* the intersection is meaningful. If you can't push past $N_{\ast}$ without qualitatively different data requirements, perhaps at that point the model has extracted all the reliably-available information in natural language, making **$L_{\ast} \approx 1.7$ nats a rough estimate of the entropy per token of natural language**, and the loss curve would flatten there.
 
 **A computation worth doing.** The paper notes WebText2 averages 4.3 characters per token. So $1.7\text{ nats/token} = 1.7/\ln 2 \approx 2.45\text{ bits/token} \approx \mathbf{0.57\text{ bits per character}}$. (That lands in the neighbourhood of classic information-theoretic estimates of written English — a comparison the paper doesn't make, but one that makes the conjecture feel less arbitrary.)
 
-The closing move is elegant: they observe that adding constant noise to the data would shift all losses by an additive constant without moving the crossing point, so the *location* of the critical point may be meaningful even if the absolute $L_*$ is not.
+The closing move is elegant: they observe that adding constant noise to the data would shift all losses by an additive constant without moving the crossing point, so the *location* of the critical point may be meaningful even if the absolute $L_{\ast}$ is not.
 
 ---
 

@@ -157,27 +157,27 @@ Already usable. But $\delta$ is an awkward thing to report — "tokens lose 6.5%
 
 As $R_D \to \infty$, the trailing factor $\to 1$ and the whole expression approaches $U + \frac{(1-\delta)}{\delta}U$. Define
 
-$$R_D^{*} = \frac{1-\delta}{\delta}$$
+$$R_D^{\ast} = \frac{1-\delta}{\delta}$$
 
-so effective data **plateaus at $U + R_D^{*} \cdot U$** no matter how many times you go around. This is the most important structural fact in the paper:
+so effective data **plateaus at $U + R_D^{\ast} \cdot U$** no matter how many times you go around. This is the most important structural fact in the paper:
 
-> There is a hard ceiling. A corpus of $U$ tokens contains at most $U(1 + R_D^{*})$ fresh-tokens-worth of signal, and no amount of compute extracts more.
+> There is a hard ceiling. A corpus of $U$ tokens contains at most $U(1 + R_D^{\ast})$ fresh-tokens-worth of signal, and no amount of compute extracts more.
 
 ### 4.4 Clean it up with the exponential
 
-For small $\delta$, two approximations: $1/R_D^{*} = \delta/(1-\delta) \approx \delta$, and from $e^x \approx 1 + x$ with $x = -\delta$, $(1-\delta) \approx e^{-\delta} \approx e^{-1/R_D^{*}}$. Substituting gives the form used everywhere in the paper:
+For small $\delta$, two approximations: $1/R_D^{\ast} = \delta/(1-\delta) \approx \delta$, and from $e^x \approx 1 + x$ with $x = -\delta$, $(1-\delta) \approx e^{-\delta} \approx e^{-1/R_D^{\ast}}$. Substituting gives the form used everywhere in the paper:
 
-$$\boxed{D' = U_{D} + U_{D} R_{D}^{*}\left(1 - e^{-R_{D}/R_{D}^{*}}\right)}$$
+$$\boxed{D' = U_{D} + U_{D} R_{D}^{\ast}\left(1 - e^{-R_{D}/R_{D}^{\ast}}\right)}$$
 
 Read it in three regimes:
 
 | Regime | Behaviour | Interpretation |
 |----|----|----|
 | $R_D = 0$ | $D' = U_D = D$ | reduces **exactly** to Chinchilla |
-| $R_D \ll R_D^{*}$ | $D' \approx U_D(1+R_D) = D$ | repeats ≈ fresh data |
-| $R_D \gg R_D^{*}$ | $D' \to U_D(1 + R_D^{*})$ | ceiling; extra epochs buy nothing |
+| $R_D \ll R_D^{\ast}$ | $D' \approx U_D(1+R_D) = D$ | repeats ≈ fresh data |
+| $R_D \gg R_D^{\ast}$ | $D' \to U_D(1 + R_D^{\ast})$ | ceiling; extra epochs buy nothing |
 
-$R_D^{*}$ is a **half-life for repetition**. At exactly $R_D = R_D^{*}$, the repeated tokens have retained $1 - 1/e \approx 63\%$ of their average value.
+$R_D^{\ast}$ is a **half-life for repetition**. At exactly $R_D = R_D^{\ast}$, the repeated tokens have retained $1 - 1/e \approx 63\%$ of their average value.
 
 That the formula collapses to Chinchilla at $R_D = 0$ is not a coincidence — it is a design requirement. A new law that disagreed with the old one in the regime the old one was fitted on would be a worse law, not a better one.
 
@@ -191,17 +191,17 @@ $$D' = 1 + 0.75 \cdot \frac{1 - 0.75^4}{0.25} = 1 + 3(1 - 0.316) = 3.05$$
 
 So five passes over one unit of data bought you the value of **3.05 units**. Four of the five passes were repeats and together they were worth about two fresh units.
 
-Now the approximation. $R_D^{*} = (1-\delta)/\delta = 3$:
+Now the approximation. $R_D^{\ast} = (1-\delta)/\delta = 3$:
 
 $$D' = 1 + 3\left(1 - e^{-4/3}\right) = 3.21$$
 
-3.21 versus 3.05 — a 5% discrepancy, which looks bad until you remember $D'$ enters the loss raised to $\beta = 0.353$. The resulting difference in the loss term is $(3.21/3.05)^{0.353} - 1 = \mathbf{1.8\%}$. The exponent flattens the error, which is why the authors accept the approximation in exchange for an interpretable $R_D^{*}$.
+3.21 versus 3.05 — a 5% discrepancy, which looks bad until you remember $D'$ enters the loss raised to $\beta = 0.353$. The resulting difference in the loss term is $(3.21/3.05)^{0.353} - 1 = \mathbf{1.8\%}$. The exponent flattens the error, which is why the authors accept the approximation in exchange for an interpretable $R_D^{\ast}$.
 
-Push it further: at $R_D = 100$, $D' = 1 + 3(1 - e^{-33.3}) = 3.99$. The ceiling $U(1+R_D^{*}) = 4$ is essentially reached. **A hundred epochs on this corpus is worth four fresh corpora — and a thousand epochs is still worth four.**
+Push it further: at $R_D = 100$, $D' = 1 + 3(1 - e^{-33.3}) = 3.99$. The ceiling $U(1+R_D^{\ast}) = 4$ is essentially reached. **A hundred epochs on this corpus is worth four fresh corpora — and a thousand epochs is still worth four.**
 
 ### 4.6 The table to actually remember
 
-Using the paper's fitted $R_D^{*} = 15.4$ (Chapter 5), here is what each epoch buys. "Marginal value" is what the $n$-th pass is worth relative to a fresh pass, $e^{-R_D/R_D^{*}}$; "efficiency" is cumulative effective data divided by tokens processed.
+Using the paper's fitted $R_D^{\ast} = 15.4$ (Chapter 5), here is what each epoch buys. "Marginal value" is what the $n$-th pass is worth relative to a fresh pass, $e^{-R_D/R_D^{\ast}}$; "efficiency" is cumulative effective data divided by tokens processed.
 
 | Epoch $n$ | Marginal value of this pass | Cumulative effective corpora | Efficiency |
 |---:|---:|---:|---:|
@@ -220,8 +220,8 @@ Every headline claim in the paper is visible in this column of numbers: 4 epochs
 
 > **Check yourself.**
 >
-> 1.  Your corpus is 10B tokens and $R_D^{*} = 15.4$. What is the largest effective dataset you could ever reach, and how much compute would be wasted getting to 90% of it?
-> 2.  Suppose you measured $\delta = 0.5$ instead. What is $R_D^{*}$, and how does the guidance change?
+> 1.  Your corpus is 10B tokens and $R_D^{\ast} = 15.4$. What is the largest effective dataset you could ever reach, and how much compute would be wasted getting to 90% of it?
+> 2.  Suppose you measured $\delta = 0.5$ instead. What is $R_D^{\ast}$, and how does the guidance change?
 
 ------------------------------------------------------------------------
 
@@ -231,28 +231,28 @@ Every headline claim in the paper is visible in this column of numbers: 4 epochs
 
 Excess parameters get exactly the same treatment, with its own learned constant:
 
-$$N' = U_N + U_N R_N^{*}\left(1 - e^{-R_N/R_N^{*}}\right)$$
+$$N' = U_N + U_N R_N^{\ast}\left(1 - e^{-R_N/R_N^{\ast}}\right)$$
 
-The story is the same one: beyond the size your data supports, each additional slab of capacity learns features the previous slab already learned, and its contribution decays exponentially. Ceiling: $N'$ never exceeds $U_N(1 + R_N^{*})$.
+The story is the same one: beyond the size your data supports, each additional slab of capacity learns features the previous slab already learned, and its contribution decays exponentially. Ceiling: $N'$ never exceeds $U_N(1 + R_N^{\ast})$.
 
 Put both substitutions into Chinchilla and you have the paper's law:
 
-$$L(U_N, U_D, R_N, R_D) = \frac{A}{\left(U_N + U_N R_N^{*}\left(1 - e^{-R_N/R_N^{*}}\right)\right)^{\alpha}} + \frac{B}{\left(U_D + U_D R_D^{*}\left(1 - e^{-R_D/R_D^{*}}\right)\right)^{\beta}} + E$$
+$$L(U_N, U_D, R_N, R_D) = \frac{A}{\left(U_N + U_N R_N^{\ast}\left(1 - e^{-R_N/R_N^{\ast}}\right)\right)^{\alpha}} + \frac{B}{\left(U_D + U_D R_D^{\ast}\left(1 - e^{-R_D/R_D^{\ast}}\right)\right)^{\beta}} + E$$
 
-If you set $R_N^{*} = R_D^{*} = \infty$, both decay terms vanish and you are back at Chinchilla exactly. It is a strict generalization, which is the right shape for a scaling law to have.
+If you set $R_N^{\ast} = R_D^{\ast} = \infty$, both decay terms vanish and you are back at Chinchilla exactly. It is a strict generalization, which is the right shape for a scaling law to have.
 
 ### 5.2 How the constants were fitted
 
 Worth knowing, because the caveats live here.
 
-- $\alpha, \beta, A, B, E$ are **fixed** to the C4 values from Chapter 2. Only $R_N^{*}$ and $R_D^{*}$ are learned — two free parameters, not seven.
+- $\alpha, \beta, A, B, E$ are **fixed** to the C4 values from Chapter 2. Only $R_N^{\ast}$ and $R_D^{\ast}$ are learned — two free parameters, not seven.
 - Objective: Huber loss on the log-sum-exp form of the equation (following Chinchilla's methodology), minimized with LBFGS from a grid of initializations.
 - **182 runs**, spanning 7M to 9B parameters and 1 to 500 epochs.
 - **Outliers were removed** — specifically, runs where excess parameters or excess epochs made loss *worse*. The functional form cannot represent that (it only ever plateaus), so such runs were excluded from the fit. Hold onto this; Chapter 11 returns to it.
 
 ### 5.3 The two numbers
 
-$$R_N^{*} = 5.31 \qquad\qquad R_D^{*} = 15.39$$
+$$R_N^{\ast} = 5.31 \qquad\qquad R_D^{\ast} = 15.39$$
 
 Interpretation, in the units that matter:
 
@@ -262,7 +262,7 @@ Interpretation, in the units that matter:
 
 ### 5.4 The inequality that drives everything
 
-$$R_D^{*} > R_N^{*}$$
+$$R_D^{\ast} > R_N^{\ast}$$
 
 Excess parameters decay **about three times faster** than repeated data. This single inequality produces the paper's central practical recommendation and its disagreement with Chinchilla:
 
@@ -278,7 +278,7 @@ The intuition to *avoid* is the natural one: "repeated data is degraded, so I sh
 
 The paper reports fits of several variants against the same 182 runs. This ablation is the evidence that the exponential decay isn't decoration:
 
-| Variant | $R_D^{*}$ | $R_N^{*}$ | $R^2$ |
+| Variant | $R_D^{\ast}$ | $R_N^{\ast}$ | $R^2$ |
 |----|---:|---:|---:|
 | No decay (plain Chinchilla on repeated data) | — | — | 0.445 |
 | Decay parameters only | — | 713.0 | 0.449 |
@@ -288,7 +288,7 @@ The paper reports fits of several variants against the same 182 runs. This ablat
 
 Three readings. First, plain Chinchilla explains less than half the variance once data is repeated — it really is the wrong model here. Second, decaying the data term is where most of the gain comes from, but decaying parameters adds a further six points. Third, the exact geometric form (§4.2) fits marginally *better* than the approximation the paper adopts; they choose the approximation anyway, for interpretability. Being explicit about paying ~2.7 points of $R^2$ for a formula humans can reason about is good practice and worth pointing at in discussion.
 
-> **Check yourself.** The "decay parameters only" row learned $R_N^{*} = 713$. What does a value that large mean the fit is saying, and why is it a symptom of a misspecified model rather than a discovery?
+> **Check yourself.** The "decay parameters only" row learned $R_N^{\ast} = 713$. What does a value that large mean the fit is saying, and why is it a symptom of a misspecified model rather than a discovery?
 
 ------------------------------------------------------------------------
 
@@ -327,7 +327,7 @@ Take $D_C = 100$M unique tokens. Chinchilla's one-epoch compute-optimal model fo
 
 The lesson to draw is not "compute-optimal is wrong." It is that **compute-optimal and loss-optimal are different objectives**, and they diverge violently when data is the binding constraint. A one-epoch model at a fixed data budget is leaving most of the extractable signal in the corpus untouched. If you have 100M tokens and a cluster, the 7M-parameter model is the wrong model to train — even though it is exactly what Chinchilla prescribes.
 
-**The frontier bends.** In the single-epoch, near-compute-optimal corner, the two laws' efficient frontiers overlap — as they must, since the new law reduces to the old there. As epochs increase, the data-constrained frontier peels away, allocating most additional compute to **epochs** rather than parameters, exactly as $R_D^{*} > R_N^{*}$ demands. The same pattern holds at all three data budgets (100M, 400M, 1.5B).
+**The frontier bends.** In the single-epoch, near-compute-optimal corner, the two laws' efficient frontiers overlap — as they must, since the new law reduces to the old there. As epochs increase, the data-constrained frontier peels away, allocating most additional compute to **epochs** rather than parameters, exactly as $R_D^{\ast} > R_N^{\ast}$ demands. The same pattern holds at all three data budgets (100M, 400M, 1.5B).
 
 **Confirmation at scale.** The prediction was tested where it costs real money: $9.3 \times 10^{21}$ FLOPs, 25B unique tokens.
 
@@ -366,7 +366,7 @@ You can reproduce that from the law. With $U_D = 44$B and $R_D = 3.05$, effectiv
 **Where it breaks down.** Extrapolating the law out to enormous compute with $D_C$ held fixed reproduces the three-phase shape from the paper's opening figure:
 
 1.  **Up to ~4 epochs** — repeating is nearly free.
-2.  **Up to ~16 epochs** ($\approx R_D^{*}$) — still worth doing, returns visibly compressing.
+2.  **Up to ~16 epochs** ($\approx R_D^{\ast}$) — still worth doing, returns visibly compressing.
 3.  **By ~40 epochs** — repeating is worthless; curves flatten and added compute buys nothing.
 
 **A prediction failure the authors report on themselves.** The fit *underestimates* final loss for runs that fail — models trained for 44 epochs where loss rises mid-training. The law is accurate in the regime you would actually operate in and optimistic in the regime you should already have left.
@@ -454,8 +454,8 @@ Where it sits in this course: Lecture 3 (Kaplan) established that loss is predic
 | **$U_N$** | Parameters the unique data supports: Chinchilla-optimal $N$ for $U_D$. Roughly $0.051 \cdot U_D$ on C4. |
 | **$R_N$** | Excess-parameter multiplier, $N/U_N - 1$. |
 | **$D'$, $N'$** | Effective data / effective parameters — the fresh-equivalent amounts after decay. |
-| **$R_D^{*}$** | Learned data half-life, **15.39**. Repeats past ~15 yield sharply diminishing returns; ceiling $U_D(1+R_D^{*})$. |
-| **$R_N^{*}$** | Learned parameter half-life, **5.31**. Smaller than $R_D^{*}$ ⇒ prefer epochs over parameters. |
+| **$R_D^{\ast}$** | Learned data half-life, **15.39**. Repeats past ~15 yield sharply diminishing returns; ceiling $U_D(1+R_D^{\ast})$. |
+| **$R_N^{\ast}$** | Learned parameter half-life, **5.31**. Smaller than $R_D^{\ast}$ ⇒ prefer epochs over parameters. |
 | **$E$** | Irreducible loss — entropy of the data. 1.87 nats on C4. |
 | **IsoFLOP** | A set of runs holding total compute constant while varying other factors. |
 | **IsoLoss contour** | A curve through (epochs, parameters) configurations achieving equal loss. |
@@ -472,20 +472,20 @@ Where it sits in this course: Lecture 3 (Kaplan) established that loss is predic
 
 1.  State the Chinchilla parametric loss and say in one sentence what each of its three terms represents.
 2.  Write $U_D$, $R_D$, $U_N$, $R_N$ in terms of $D$, $N$, and $D_C$. How many repetitions does a 6-epoch run have?
-3.  Give the fitted values of $R_D^{*}$ and $R_N^{*}$ and state the ceiling each implies.
+3.  Give the fitted values of $R_D^{\ast}$ and $R_N^{\ast}$ and state the ceiling each implies.
 
 **Mechanism**
 
-4.  Derive $D' = U + U R_D^{*}(1 - e^{-R_D/R_D^{*}})$ from the geometric-series form, naming the two approximations used and the assumption each requires.
+4.  Derive $D' = U + U R_D^{\ast}(1 - e^{-R_D/R_D^{\ast}})$ from the geometric-series form, naming the two approximations used and the assumption each requires.
 5.  Show that at $R_D = 0$ the full law reduces exactly to Chinchilla. Why is that a design requirement rather than a lucky coincidence?
 6.  The paper's own example has the approximation giving $D' = 3.21$ where the exact sum gives 3.05 — a 5% gap that becomes 1.8% in the loss. Explain the mechanism that shrinks it, and say what would happen to that gap if $\beta$ were 0.9 instead of 0.353.
 7.  Why must $N$ be split into $U_N$ and $R_N$? Construct the absurd case that plain Chinchilla permits.
-8.  Explain, using $R_D^{*} > R_N^{*}$, why surplus compute should go to epochs before parameters. Then state the plausible-sounding intuition this refutes and identify precisely where that intuition goes wrong.
+8.  Explain, using $R_D^{\ast} > R_N^{\ast}$, why surplus compute should go to epochs before parameters. Then state the plausible-sounding intuition this refutes and identify precisely where that intuition goes wrong.
 
 **Application**
 
 9.  You have 2B unique tokens and a budget for 24B training tokens. Using the table in §4.6, estimate your effective data and the fraction of compute doing useful work. Would you rather double your unique data or double your compute?
-10. A colleague proposes training a 13B model on a 1B-token corpus because "more capacity compensates for less data." Using $U_N \approx 0.051 U_D$ and $R_N^{*}$, estimate the effective parameter count and explain what happens to the other 12-point-something billion.
+10. A colleague proposes training a 13B model on a 1B-token corpus because "more capacity compensates for less data." Using $U_N \approx 0.051 U_D$ and $R_N^{\ast}$, estimate the effective parameter count and explain what happens to the other 12-point-something billion.
 11. Recompute the Galactica recommendation qualitatively: why does the law move parameters *down* and epochs *up* rather than the reverse, given that repeated data is the degraded resource?
 
 **Critique**
