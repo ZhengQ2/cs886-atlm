@@ -212,7 +212,7 @@ This looks arbitrary. It isn't — it's the simplest form satisfying three state
 
 1. *Rescaling.* A change of tokenizer multiplies the loss by an overall factor; the functional form must absorb that into $N_c$ and $D_c$. (Hence §4.3: those constants are not fundamental.)
 2. *Correct limits.* $L(N, \infty) = L(N)$ and $L(\infty, D) = L(D)$. Note the consequence: knowing the two single-variable laws fully determines every parameter of the joint law.
-3. *Analyticity at $`D = \infty`$*, i.e. a $1/D$ expansion with integer powers. Motivated by the idea that overfitting tracks the dataset's variance or signal-to-noise ratio, which scales as $1/D$.
+3. *Analyticity at $`D = \infty`$,* i.e. a $1/D$ expansion with integer powers. Motivated by the idea that overfitting tracks the dataset's variance or signal-to-noise ratio, which scales as $1/D$.
 
 The authors are candid that principle 3 has much weaker support than 1 and 2, and that it's what forces the asymmetric treatment of $N$ and $D$. Symmetric alternatives exist but lack the clean $1/D$ expansion and need an extra parameter. Their final defence is empirical: it fits.
 
