@@ -198,7 +198,7 @@ Relatedly (Appendix D.5): loss at position $T$ in the context is itself a power 
 
 The two separate laws $L(N)$ and $L(D)$ don't tell you what happens when *both* are limited. The paper proposes:
 
-> $$\mathbf{L(N, D) = \left[\left(\frac{N_c}{N}\right)^{\alpha_N/\alpha_D} + \frac{D_c}{D}\right]^{\alpha_D}} \tag{1.5}$$
+> $$\mathbf{L(N, D) = \left[\left(\frac{N_c}{N}\right)^{\alpha_N/\alpha_D} + \frac{D_c}{D}\right]^{\alpha_D}} \qquad \text{(1.5)}$$
 
 This looks arbitrary. It isn't — it's the simplest form satisfying three stated requirements.
 
@@ -238,7 +238,7 @@ Define the overfitting penalty relative to infinite data:
 
 Substituting Eq. 1.5 gives
 
-> $$\delta L \approx \left[1 + \left(\frac{N}{N_c}\right)^{\alpha_N/\alpha_D}\left(\frac{D_c}{D}\right)\right]^{\alpha_D} - 1 \tag{4.3}$$
+> $$\delta L \approx \left[1 + \left(\frac{N}{N_c}\right)^{\alpha_N/\alpha_D}\left(\frac{D_c}{D}\right)\right]^{\alpha_D} - 1 \qquad \text{(4.3)}$$
 
 and the payoff is that **$\delta L$ depends on $N$ and $D$ only through the single combination $N^{0.74}/D$.** Two wildly different $(N, D)$ pairs with the same ratio overfit by the same amount. This is what the paper means by "universality of overfitting," and it's exactly the kind of collapse-onto-one-curve result that indicates you've found the right variables.
 
@@ -273,13 +273,13 @@ Every model in the sweep trained at the same batch size, $2^{19}$ tokens. But th
 
 The paper imports the framework of McCandlish et al. (2018). The empirical relation, for training to any fixed target loss $L$:
 
-> $$\left(\frac{S}{S_{\min}} - 1\right)\left(\frac{E}{E_{\min}} - 1\right) = 1 \tag{5.1}$$
+> $$\left(\frac{S}{S_{\min}} - 1\right)\left(\frac{E}{E_{\min}} - 1\right) = 1 \qquad \text{(5.1)}$$
 
 Here $S$ is parameter updates, $E = BS$ is examples processed, $S_{\min}$ is the fewest possible steps (achieved at infinite batch size) and $E_{\min}$ the fewest possible examples (achieved at infinitesimal batch size).
 
 **What this curve says.** It's a hyperbola trading steps against samples. You cannot have both minimum steps and minimum data — pushing one toward its floor sends the other to infinity. Define
 
-> $$\mathbf{B_{\text{crit}}(L) \equiv \frac{E_{\min}}{S_{\min}}} \tag{5.2}$$
+> $$\mathbf{B_{\text{crit}}(L) \equiv \frac{E_{\min}}{S_{\min}}} \qquad \text{(5.2)}$$
 
 Training at exactly $B_{\text{crit}}$ puts you at the balanced point of the hyperbola: **$2S_{\min}$ steps and $2E_{\min}$ examples** — double the minimum of each, which is the best compromise available. Below $B_{\text{crit}}$ you waste wall-clock time; above it you waste compute.
 
@@ -289,7 +289,7 @@ Training at exactly $B_{\text{crit}}$ puts you at the balanced point of the hype
 
 The striking empirical result: **$B_{\text{crit}}$ is independent of model size.** A 3M-parameter model and an 85M-parameter model at the same loss want the same batch size. It depends only on how good you currently are:
 
-> $$\mathbf{B_{\text{crit}}(L) \approx \frac{B_*}{L^{1/\alpha_B}}}, \qquad B_* \approx 2 \times 10^8\text{ tokens}, \qquad \alpha_B \approx 0.21 \tag{5.3}$$
+> $$\mathbf{B_{\text{crit}}(L) \approx \frac{B_{\ast}}{L^{1/\alpha_B}}}, \qquad B_{\ast} \approx 2 \times 10^8\text{ tokens}, \qquad \alpha_B \approx 0.21 \qquad \text{(5.3)}$$
 
 Since $1/\alpha_B \approx 4.76$, $B_{\text{crit}} \propto L^{-4.76}$, and the batch size roughly **doubles for every 13% decrease in loss** (because $2^{-0.21} \approx 0.87$).
 
@@ -301,8 +301,8 @@ Why parameterize it so that $B_{\text{crit}}$ diverges as $L \rightarrow 0$? Bec
 
 With $B_{\text{crit}}$ in hand, translate any actual run into the idealized regimes:
 
-> $$\mathbf{S_{\min}(S) \equiv \frac{S}{1 + B_{\text{crit}}(L)/B}} \qquad \text{— steps you'd need at } B \gg B_{\text{crit}} \tag{5.4}$$
-> $$\mathbf{C_{\min}(C) \equiv \frac{C}{1 + B/B_{\text{crit}}(L)}} \qquad \text{— compute you'd need at } B \ll B_{\text{crit}} \tag{5.5}$$
+> $$\mathbf{S_{\min}(S) \equiv \frac{S}{1 + B_{\text{crit}}(L)/B}} \qquad \text{— steps you'd need at } B \gg B_{\text{crit}} \qquad \text{(5.4)}$$
+> $$\mathbf{C_{\min}(C) \equiv \frac{C}{1 + B/B_{\text{crit}}(L)}} \qquad \text{— compute you'd need at } B \ll B_{\text{crit}} \qquad \text{(5.5)}$$
 
 Sanity check the limits: if you already train far above $B_{\text{crit}}$ then $B_{\text{crit}}/B \rightarrow 0$ and $S_{\min} \rightarrow S$ (you're already step-minimal). If you train far below it, $B/B_{\text{crit}} \rightarrow 0$ and $C_{\min} \rightarrow C$. Halfway, at $B = B_{\text{crit}}$, each gets divided by 2 — the factor-of-2 from §6.2.
 
@@ -316,7 +316,7 @@ From here on, every "compute" in the paper means $C_{\min}$. This is a normaliza
 
 In the infinite-data limit, after an initial transient, loss as a function of model size and training steps fits:
 
-> $$\mathbf{L(N, S_{\min}) = \left(\frac{N_c}{N}\right)^{\alpha_N} + \left(\frac{S_c}{S_{\min}}\right)^{\alpha_S}} \tag{1.6 / 5.6}$$
+> $$\mathbf{L(N, S_{\min}) = \left(\frac{N_c}{N}\right)^{\alpha_N} + \left(\frac{S_c}{S_{\min}}\right)^{\alpha_S}} \qquad \text{(1.6 / 5.6)}$$
 
 Fitted: $\alpha_N = 0.077$, $\alpha_S = \mathbf{0.76}$, $N_c = 6.5 \times 10^{13}$, $S_c = 2.1 \times 10^3$.
 
@@ -337,7 +337,7 @@ The paper offers a speculative reading of $\alpha_S$: since the fit is best late
 
 If you're data-limited, when should you stop? The reasoning: finite-$D$ and infinite-$D$ learning curves track each other until overfitting kicks in, so the stopping point should correspond to the point where the achievable gap has been closed. Inverting the $L(N, S)$ relation:
 
-> $$\mathbf{S_{\text{stop}}(N, D) \gtrsim \frac{S_c}{\left[L(N, D) - L(N, \infty)\right]^{1/\alpha_S}}} \tag{5.7}$$
+> $$\mathbf{S_{\text{stop}}(N, D) \gtrsim \frac{S_c}{\left[L(N, D) - L(N, \infty)\right]^{1/\alpha_S}}} \qquad \text{(5.7)}$$
 
 Read it as: the smaller the overfitting gap between your finite-data loss and the infinite-data loss, the longer you should train. It's a lower bound and underestimates, because in reality finite-$D$ loss decreases more slowly, so you actually need more steps than this.
 
@@ -382,7 +382,7 @@ Ratio: about **$6$ tokens per parameter.** Hold that number; Chapter 11 is about
 
 The allocation isn't just a fit — it's derivable. Substitute $S = C/(6NB(L))$ into $L(N, S)$ and minimize over $N$ at fixed $C$. The optimality condition (Appendix B) yields:
 
-> $$\mathbf{\alpha_C^{\min} = \frac{1}{1/\alpha_S + 1/\alpha_B + 1/\alpha_N}} \tag{6.4}$$
+> $$\mathbf{\alpha_C^{\min} = \frac{1}{1/\alpha_S + 1/\alpha_B + 1/\alpha_N}} \qquad \text{(6.4)}$$
 
 Plug in $\alpha_S = 0.76$, $\alpha_B = 0.21$, $\alpha_N = 0.077$: $1/(1.32 + 4.76 + 12.99) = 1/19.07 \approx \mathbf{0.052}$, against an empirical fit of 0.050. Similarly $N(C_{\min}) \propto C_{\min}^{\alpha_C^{\min}/\alpha_N} \approx C_{\min}^{0.71}$, against the empirical 0.73.
 
@@ -427,7 +427,7 @@ Data is needed faster than compute-optimal training can supply it. So compute-ef
 
 **Make it quantitative.** Once data-limited, loss should follow $L(D) \propto D^{-0.095}$, and with $D \propto C_{\min}^{0.27}$ that gives $L \propto C_{\min}^{-0.026}$ — shallower than the compute law's $C_{\min}^{-0.050}$. A shallower line and a steeper line must cross. The crossing point:
 
-> $$\mathbf{C_* \sim 10^4\text{ PF-days}, \quad N_* \sim 10^{12}\text{ params}, \quad D_* \sim 10^{12}\text{ tokens}, \quad L_* \sim 1.7\text{ nats/token}} \tag{6.8}$$
+> $$\mathbf{C_* \sim 10^4\text{ PF-days}, \quad N_* \sim 10^{12}\text{ params}, \quad D_* \sim 10^{12}\text{ tokens}, \quad L_* \sim 1.7\text{ nats/token}} \qquad \text{(6.8)}$$
 
 The paper stresses these values are highly uncertain — an order of magnitude either way, since they come from differencing two fitted exponents.
 
