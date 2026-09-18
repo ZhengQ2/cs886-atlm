@@ -330,9 +330,9 @@ $$X_{\text{in}}^\top X_{\text{in}} = C_u + rC_d \qquad\text{but}\qquad X_{\text{
 
 Conditioning on $X_{\text{in}}$ and taking expectations over the hidden coordinates:
 
-$$\mathbb{E}\left[L_{\text{train}} \mid X_{\text{in}}\right] = \frac{\|\beta_{\text{out}}\|_2^2}{n+rd}\Bigl[n + rd - \operatorname{tr}\bigl((C_u + r^2C_d)(C_u+rC_d)^{-1}\bigr)\Bigr] \qquad \text{(9)}$$
+$$\mathbb{E}\left[L_{\text{train}} \mid X_{\text{in}}\right] = \frac{\|\beta_{\text{out}}\|_2^2}{n+rd}\Bigl[n + rd - \mathrm{tr}\bigl((C_u + r^2C_d)(C_u+rC_d)^{-1}\bigr)\Bigr] \qquad \text{(9)}$$
 
-$$\mathbb{E}\left[L_{\text{test}} \mid X_{\text{in}}\right] = \|\beta_{\text{out}}\|_2^2\Bigl[1 + \operatorname{tr}\bigl((C_u+rC_d)^{-1}(C_u+r^2C_d)(C_u+rC_d)^{-1}\bigr)\Bigr] \qquad \text{(10)}$$
+$$\mathbb{E}\left[L_{\text{test}} \mid X_{\text{in}}\right] = \|\beta_{\text{out}}\|_2^2\Bigl[1 + \mathrm{tr}\bigl((C_u+rC_d)^{-1}(C_u+r^2C_d)(C_u+rC_d)^{-1}\bigr)\Bigr] \qquad \text{(10)}$$
 
 The $\|\beta_{\text{out}}\|_2^2$ prefactor is the irreducible part: signal the learner structurally cannot see. The bracketed term in (10) is the aliasing penalty, and notice that both $C_u + rC_d$ and $C_u + r^2C_d$ appear in it. When those two matrices disagree — which is exactly when $r$ is large and $C_d$ is non-negligible — the penalty inflates.
 

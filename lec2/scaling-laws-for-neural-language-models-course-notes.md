@@ -453,7 +453,7 @@ Appendix C is short, honest, and exactly what you want to discuss in a seminar. 
 5. **Hyperparameters may be under-tuned.** They tuned learning rate and tried schedules, but concede they may have neglected something important (initialization scale, momentum).
 6. **Learning rate interacts with run length.** They note that near-convergence training may need a smaller LR to avoid divergence while short runs might tolerate larger ones — and that they **did not experiment with higher learning rates for runs that didn't go to convergence.** Sit with that one; it turns out to matter enormously (Chapter 11).
 
-For reference, the LR heuristic they used: $\operatorname{LR}(N) \approx 0.003239 - 0.0001395 \log N$, which they note breaks down above $10^{10}$ parameters.
+For reference, the LR heuristic they used: $\mathrm{LR}(N) \approx 0.003239 - 0.0001395 \log N$, which they note breaks down above $10^{10}$ parameters.
 
 ---
 
